@@ -1,4 +1,18 @@
-# Multidimensional Poverty Index (MPI) Package {mpindex}
+---
+title: "mpindex"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mpindex}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 This document presents an illustration of a simple application of `mpindex` package for computing the Multidimensional Poverty Index (MPI) using the Alkire-Foster (AF) counting method developed by Sabina Alkire and James Foster.
 
@@ -6,19 +20,19 @@ This document presents an illustration of a simple application of `mpindex` pack
 
 To install the `mpindex` package from CRAN:
 
-```r
+```{r, eval=F}
 install.packages('mpindex')
 ```
 
 If you want to get the latest development version of `mpindex`, install it from GitHub. Note that you may need to install first `devtools`.
 
-```r
+```{r, eval=F}
 devtools::install_github('yng-me/mpindex')
 ```
 
 Load the package once you have successfully completed the installation.
 
-```r
+```{r setup}
 library(mpindex)
 ```
 
@@ -34,14 +48,27 @@ For convenience, `mpindex` has included built-in specification files (in differe
 
 To see the list of files available:
 
-```r
+```{r}
 system.file("extdata", package = "mpindex") |> list.files()
 ```
 
 To use a built-in specification file, say the `.csv` file, use below script to first get the full path of the file.
 
-```r
+```{r}
 specs_file <- system.file("extdata", "global-mpi-specs.csv", package = "mpindex")
+```
+
+```{r, echo=F}
+read.csv(specs_file) |> 
+  gt::gt() |> 
+  gt::tab_header(
+    title = 'Global MPI – Dimensions, Indicators, Deprivation Cutoffs, and Weights'
+  ) |> 
+  gt::tab_options(
+    table.width = '100%',
+    table.font.size = 12,
+  ) |> 
+  gt::tab_footnote('Source: Alkire, S., Kanagaratnam, U. and Suppa, N. (2020). ‘The global Multidimensional Poverty Index (MPI): 2020 revision’, OPHI MPI Methodological Note 49, Oxford Poverty and Human Development Initiative, University of Oxford.')
 ```
 
 ### User-defined specification file
@@ -65,14 +92,14 @@ Once you have prepared the specification file, load it using the `define_mpi_spe
 
 For demonstration purposes, we will use the built-in specification file, discussed above.
 
-```r
+```{r}
 specs_file <- system.file("extdata", "global-mpi-specs.csv", package = "mpindex")
 mpi_specs <- define_mpi_specs(specs_file)
 ```
 
 `define_mpi_specs` requires a specification file as its first argument. The default poverty cutoff is set to `1/3` (based on Global MPI), with a unit of analysis set to `households`. You can also define a list of poverty cutoffs by specifying in the `.poverty_cutoffs` argument to achieve gradient MPIs.
 
-```r
+```{r, eval=F}
 mpi_specs <- define_mpi_specs(
   .mpi_specs_file = specs_file, 
   .poverty_cutoffs = c(1/3, 0.2, 0.8)
@@ -81,7 +108,7 @@ mpi_specs <- define_mpi_specs(
 
 If your dataset contains unique ID, like `uuid`, it is recommended to define it here using the `.uid` argument. 
 
-```r
+```{r}
 mpi_specs <- define_mpi_specs(
   .mpi_specs_file = specs_file, 
   .uid = 'uuid'
@@ -90,7 +117,7 @@ mpi_specs <- define_mpi_specs(
 
 You can also set the aggregation level. Make sure it corresponds to the column name present in your dataset (see `?df_househod` and more below).
 
-```r
+```{r, eval=F}
 mpi_specs <- define_mpi_specs(
   .mpi_specs_file = specs_file, 
   .poverty_cutoffs = c(1/3, 0.2, 0.8),
@@ -106,7 +133,7 @@ mpi_specs <- define_mpi_specs(
 
 It is also recommended to make the MPI specification available globally, rather than providing the argument manually everytime you use other functions within the `mpindex` (more of this later).
 
-```r
+```{r}
 options(mpi_specs = mpi_specs)
 ```
 
@@ -126,6 +153,15 @@ For this demonstration, we will use two (2) synthetic datasets available within 
 - `df_household` household-level data (type `?df_household` for more info)
 - `df_household_roster` individual-level data (type `?df_household_roster` for more info)
 
+```{r, warning=F, message=F}
+library(dplyr)
+
+glimpse(df_household)
+```
+
+```{r}
+glimpse(df_household_roster)
+```
 
 ## 4. Create deprivation profile
 
@@ -133,7 +169,7 @@ For this demonstration, we will use two (2) synthetic datasets available within 
 
 First, we need to create an empty list, and name it `deprivation_profile` (but feel free to name it whatever you like). 
 
-```r
+```{r}
 deprivation_profile <- list()
 ```
 
@@ -145,7 +181,7 @@ To create a deprivation profile for each indicator, we use the `define_deprivati
 
 For this indicator, we use the `df_household_roster` dataset. By default, `define_deprivation` sets the `.collapse = FALSE`. Since we need to collapse it to the household level, we need to set `.collapse = TRUE`.
 
-```r
+```{r}
 deprivation_profile$nutrition <- df_household_roster |> 
   define_deprivation(
     .indicator = nutrition,
@@ -158,7 +194,7 @@ deprivation_profile$nutrition <- df_household_roster |>
 
 For child mortality, we use the `df_household` dataset. But unlike in `nutrition`, we do not need to provide the `.collapse` argument since it is not applicable here.
 
-```r
+```{r}
 deprivation_profile$child_mortality <- df_household |> 
   define_deprivation(
     .indicator = child_mortality,
@@ -171,7 +207,7 @@ deprivation_profile$child_mortality <- df_household |>
 
 #### 2.1. Years of schooling
 
-```r
+```{r}
 deprivation_profile$year_schooling <- df_household_roster |> 
   define_deprivation(
     .indicator = year_schooling,
@@ -182,7 +218,7 @@ deprivation_profile$year_schooling <- df_household_roster |>
 
 #### 2.2. School attendance
 
-```r
+```{r}
 deprivation_profile$school_attendance <- df_household_roster |> 
   define_deprivation(
     .indicator = school_attendance,
@@ -195,7 +231,7 @@ deprivation_profile$school_attendance <- df_household_roster |>
 
 #### 3.1. Cooking fuel
 
-```r
+```{r}
 deprivation_profile$cooking_fuel <- df_household |> 
   define_deprivation(
     .indicator = cooking_fuel,
@@ -206,7 +242,7 @@ deprivation_profile$cooking_fuel <- df_household |>
 
 #### 3.2. Sanitation
 
-```r
+```{r}
 deprivation_profile$sanitation <- df_household |> 
   define_deprivation(
     .indicator = sanitation,
@@ -217,7 +253,7 @@ deprivation_profile$sanitation <- df_household |>
 
 #### 3.3. Drinking water
 
-```r
+```{r}
 deprivation_profile$drinking_water <- df_household |> 
   define_deprivation(
     .indicator = drinking_water,
@@ -227,7 +263,7 @@ deprivation_profile$drinking_water <- df_household |>
 
 #### 3.4. Electricity
 
-```r
+```{r}
 deprivation_profile$electricity <- df_household |> 
   define_deprivation(
     .indicator = electricity,
@@ -237,7 +273,7 @@ deprivation_profile$electricity <- df_household |>
 
 #### 3.5. Housing
 
-```r
+```{r}
 deprivation_profile$housing <- df_household |> 
   define_deprivation(
     .indicator = housing,
@@ -250,7 +286,7 @@ deprivation_profile$housing <- df_household |>
 
 For this indicator, we need additional transformation.
 
-```r
+```{r}
 deprivation_profile$assets <- df_household |> 
   mutate_at(vars(starts_with('asset_')), ~ if_else(. > 0, 1L, 0L)) |> 
   mutate(
@@ -279,23 +315,222 @@ deprivation_profile$assets <- df_household |>
 
 After completing the deprivation profile, use the `compute_mpi` function and pass the `deprivation_profile` list you created above.
 
-```r
+```{r}
 mpi_result <- df_household |>
   compute_mpi(deprivation_profile)
+
+names(mpi_result)
 ```
+
+### Outputs
+
+#### 1. The MPI
+
+```{r, eval=F}
+mpi_result$index
+```
+
+
+```{r, echo=F}
+mpi_result$index |>
+  gt::gt() |> 
+  gt::tab_header(
+    title = 'MPI Results using 33% Poverty Cutoff'
+  ) |> 
+  gt::fmt_number(
+    columns = 2:4,
+    decimals = 3
+  ) |> 
+  gt::tab_options(
+    table.width = '100%',
+    table.font.size = 12,
+  )
+```
+
+#### 2. Contribution by dimension
+
+```{r, eval=F}
+mpi_result$contribution
+```
+
+
+```{r, echo=F}
+mpi_result$contribution |> 
+  rename_all(~ stringr::str_remove(., '^(Health|Education|Living Standards)>')) |> 
+  gt::gt() |> 
+  gt::tab_header(
+    title = 'Contribution by Dimenstion and Indicator to MPI using 33% Poverty Cutoff'
+  ) |> 
+  gt:: tab_spanner(
+    label = "Health",
+    columns = 2:3
+  ) |> 
+  gt:: tab_spanner(
+    label = "Education",
+    columns = 4:5
+  ) |> 
+  gt:: tab_spanner(
+    label = "Living Standards",
+    columns = 6:11
+  ) |> 
+  gt::fmt_number(
+    columns = 2:11,
+    decimals = 1
+  ) |> 
+  gt::tab_options(
+    table.font.size = 12,
+  )
+```
+
+#### 3. Headcount ratio
+
+```{r, eval=F}
+mpi_result$headcount_ratio$uncensored
+```
+
+```{r, echo=F}
+mpi_result$headcount_ratio$uncensored |> 
+  rename_all(~ stringr::str_remove(., '^(Health|Education|Living Standards)>')) |> 
+  gt::gt() |> 
+  gt::tab_header(
+    title = 'Uncensored Headcount Ratio'
+  ) |> 
+  gt:: tab_spanner(
+    label = "Health",
+    columns = 2:3
+  ) |> 
+  gt:: tab_spanner(
+    label = "Education",
+    columns = 4:5
+  ) |> 
+  gt:: tab_spanner(
+    label = "Living Standards",
+    columns = 6:11
+  ) |> 
+  gt::fmt_number(
+    columns = 2:11,
+    decimals = 3
+  ) |> 
+  gt::tab_options(
+    table.font.size = 12,
+  )
+```
+
+
+```{r, eval=F}
+mpi_result$headcount_ratio$censored
+```
+
+```{r, echo=F}
+mpi_result$headcount_ratio$censored |> 
+  rename_all(~ stringr::str_remove(., '^(Health|Education|Living Standards)>')) |> 
+  gt::gt() |> 
+  gt::tab_header(
+    title = 'Censored Headcount Ratio using 33% Poverty Cutoff'
+  ) |> 
+  gt:: tab_spanner(
+    label = "Health",
+    columns = 2:3
+  ) |> 
+  gt:: tab_spanner(
+    label = "Education",
+    columns = 4:5
+  ) |> 
+  gt:: tab_spanner(
+    label = "Living Standards",
+    columns = 6:11
+  ) |> 
+  gt::fmt_number(
+    columns = 2:11,
+    decimals = 3
+  ) |> 
+  gt::tab_options(
+    table.font.size = 12,
+  )
+```
+
+#### 4. Deprivation matrix (first 6 observations)
+
+```{r, eval=F}
+mpi_result$deprivation_matrix$uncensored |> head()
+```
+
+```{r, echo=F}
+mpi_result$deprivation_matrix$uncensored |> 
+  head() |> 
+  rename_all(~ stringr::str_remove(., '^(Health|Education|Living Standards)>')) |> 
+  gt::gt() |> 
+  gt::tab_header(
+    title = 'Uncensored Deprivation Matrix '
+  ) |> 
+  gt:: tab_spanner(
+    label = "Health",
+    columns = 2:3
+  ) |> 
+  gt:: tab_spanner(
+    label = "Education",
+    columns = 4:5
+  ) |> 
+  gt:: tab_spanner(
+    label = "Living Standards",
+    columns = 6:11
+  ) |> 
+  gt::fmt_number(
+    columns = 2,
+    decimals = 3
+  ) |> 
+  gt::tab_options(
+    table.font.size = 12,
+  )
+```
+
+
+```{r, eval=F}
+mpi_result$deprivation_matrix$censored |> head()
+```
+
+```{r, echo=F}
+mpi_result$deprivation_matrix$censored |> 
+  head() |> 
+  rename_all(~ stringr::str_remove(., '^(Health|Education|Living Standards)>')) |> 
+  gt::gt() |> 
+  gt::tab_header(
+    title = 'Censored Deprivation Matrix using 33% Poverty Cutoff'
+  ) |> 
+  gt:: tab_spanner(
+    label = "Health",
+    columns = 2:3
+  ) |> 
+  gt:: tab_spanner(
+    label = "Education",
+    columns = 4:5
+  ) |> 
+  gt:: tab_spanner(
+    label = "Living Standards",
+    columns = 6:11
+  ) |> 
+  gt::fmt_number(
+    columns = 2,
+    decimals = 3
+  ) |> 
+  gt::tab_options(
+    table.font.size = 12,
+  )
+```
+
 
 ## 5. Save output
 
 You may also save your output into an Excel file.
 
-```r
+```{r, eval=F}
 save_mpi(mpi_result, .filename = 'MPI Sample Output')
 ```
 
 
 ## Full script
 
-```r
+```{r, eval=F}
 # ----------------------------------
 # Load MPI specs from the built-in specs file
 specs_file <- system.file("extdata", "global-mpi-specs.csv", package = "mpindex")
@@ -398,3 +633,5 @@ mpi_result <- df_household |>
 # You may also save your output into an Excel file
 save_mpi(mpi_result, .filename = 'MPI Sample Output')
 ```
+
+
