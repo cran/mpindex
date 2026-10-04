@@ -385,31 +385,26 @@ dataset. In real work these columns come from the survey microdata.</p>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>df_hh <span class="ot">&lt;-</span> df_household</span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>df_hh<span class="sc">$</span>hh_weight <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="fl">0.8</span>, <span class="fl">2.5</span>)   <span class="co"># sampling weight</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>df_hh<span class="sc">$</span>strata    <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;urban&quot;</span>, <span class="st">&quot;rural&quot;</span>), n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>df_hh<span class="sc">$</span>psu       <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)  <span class="co"># primary sampling unit</span></span></code></pre></div>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>df_hh<span class="sc">$</span>strata <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;urban&quot;</span>, <span class="st">&quot;rural&quot;</span>), n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>df_hh<span class="sc">$</span>psu <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)  <span class="co"># primary sampling unit</span></span></code></pre></div>
 <p>Define the deprivation cutoffs (same as in the main vignette):</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>deprivations <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">nutrition         =</span> <span class="fu">deprived</span>(undernourished <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> age <span class="sc">&lt;</span> <span class="dv">70</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>                               <span class="at">.data =</span> df_household_roster, <span class="at">collapse_fn =</span> max),</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">child_mortality   =</span> <span class="fu">deprived</span>(with_child_died <span class="sc">==</span> <span class="dv">1</span>),</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">year_schooling    =</span> <span class="fu">deprived</span>(completed_6yrs_schooling <span class="sc">==</span> <span class="dv">2</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>                               <span class="at">.data =</span> df_household_roster, <span class="at">collapse_fn =</span> max),</span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">school_attendance =</span> <span class="fu">deprived</span>(attending_school <span class="sc">==</span> <span class="dv">2</span> <span class="sc">&amp;</span> age <span class="sc">%in%</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">24</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>                               <span class="at">.data =</span> df_household_roster, <span class="at">collapse_fn =</span> max),</span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="at">cooking_fuel      =</span> <span class="fu">deprived</span>(cooking_fuel <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>, <span class="dv">9</span>)),</span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="at">sanitation        =</span> <span class="fu">deprived</span>(toilet <span class="sc">&gt;</span> <span class="dv">1</span>),</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="at">drinking_water    =</span> <span class="fu">deprived</span>(drinking_water <span class="sc">==</span> <span class="dv">2</span>),</span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="at">electricity       =</span> <span class="fu">deprived</span>(electricity <span class="sc">==</span> <span class="dv">2</span>),</span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="at">housing           =</span> <span class="fu">deprived</span>(</span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    roof <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">9</span>) <span class="sc">|</span> walls <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">99</span>) <span class="sc">==</span> <span class="dv">2</span> <span class="sc">|</span> floor <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">9</span>)</span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  ),</span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="at">assets =</span> <span class="fu">deprived</span>(<span class="sc">!</span>(</span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>    (asset_tv <span class="sc">+</span> asset_telephone <span class="sc">+</span> asset_mobile_phone <span class="sc">+</span> asset_computer <span class="sc">+</span></span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>       asset_animal_cart <span class="sc">+</span> asset_bicycle <span class="sc">+</span> asset_motorcycle <span class="sc">+</span></span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>       asset_refrigerator) <span class="sc">&gt;</span> <span class="dv">1</span> <span class="sc">&amp;</span></span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>      (asset_car <span class="sc">+</span> asset_truck) <span class="sc">&gt;</span> <span class="dv">0</span></span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>  ))</span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">nutrition =</span> <span class="fu">deprived</span>(undernourished <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> age <span class="sc">&lt;</span> <span class="dv">70</span>, <span class="at">.data =</span> df_household_roster, <span class="at">collapse_fn =</span> max),</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">child_mortality =</span> <span class="fu">deprived</span>(with_child_died <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">year_schooling =</span> <span class="fu">deprived</span>(completed_6yrs_schooling <span class="sc">==</span> <span class="dv">2</span>, <span class="at">.data =</span> df_household_roster, <span class="at">collapse_fn =</span> max),</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">school_attendance =</span> <span class="fu">deprived</span>(attending_school <span class="sc">==</span> <span class="dv">2</span> <span class="sc">&amp;</span> age <span class="sc">%in%</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">24</span>, <span class="at">.data =</span> df_household_roster, <span class="at">collapse_fn =</span> max),</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">cooking_fuel =</span> <span class="fu">deprived</span>(cooking_fuel <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>, <span class="dv">9</span>)),</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">sanitation =</span> <span class="fu">deprived</span>(toilet <span class="sc">&gt;</span> <span class="dv">1</span>),</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="at">drinking_water =</span> <span class="fu">deprived</span>(drinking_water <span class="sc">==</span> <span class="dv">2</span>),</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="at">electricity =</span> <span class="fu">deprived</span>(electricity <span class="sc">==</span> <span class="dv">2</span>),</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="at">housing =</span> <span class="fu">deprived</span>(roof <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">9</span>) <span class="sc">|</span> walls <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">99</span>) <span class="sc">==</span> <span class="dv">2</span> <span class="sc">|</span> floor <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">9</span>)),</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="at">assets =</span> <span class="fu">deprived</span>(<span class="sc">!</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>    (asset_tv <span class="sc">+</span> asset_telephone <span class="sc">+</span> asset_mobile_phone <span class="sc">+</span> asset_computer <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>       asset_animal_cart <span class="sc">+</span> asset_bicycle <span class="sc">+</span> asset_motorcycle <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>       asset_refrigerator) <span class="sc">&gt;</span> <span class="dv">1</span> <span class="sc">&amp;</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>      (asset_car <span class="sc">+</span> asset_truck) <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  ))</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>)</span></code></pre></div>
 <hr />
 </div>
 <div id="simple-random-sample-weights-only" class="section level2">
@@ -478,9 +473,15 @@ your data frame carry the weight, stratum, and cluster identifiers.</p>
 estimates.</p>
 <p>A finite-population correction can also be supplied if your sampling
 frame contains the stratum sizes:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">compute_mpi</span>(df_hh, <span class="at">mpi_specs =</span> mpi_specs, <span class="at">deprivations =</span> deprivations,</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>            <span class="at">weight =</span> <span class="st">&quot;hh_weight&quot;</span>, <span class="at">strata =</span> <span class="st">&quot;strata&quot;</span>, <span class="at">cluster =</span> <span class="st">&quot;psu&quot;</span>,</span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>            <span class="at">.fpc    =</span> <span class="st">&quot;stratum_size&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">compute_mpi</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  df_hh, </span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">mpi_specs =</span> mpi_specs, </span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">deprivations =</span> deprivations,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">weight =</span> <span class="st">&quot;hh_weight&quot;</span>, </span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="at">strata =</span> <span class="st">&quot;strata&quot;</span>, </span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="st">&quot;psu&quot;</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="at">fpc =</span> <span class="st">&quot;stratum_size&quot;</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>)</span></code></pre></div>
 <hr />
 </div>
 <div id="option-b-pre-built-svydesign-object" class="section level2">
@@ -489,11 +490,11 @@ frame contains the stratum sizes:</p>
 prefer to specify the design once and reuse it — pass it via
 <code>survey_design</code>:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>svy <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(</span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="at">ids     =</span> <span class="sc">~</span>psu,</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="at">strata  =</span> <span class="sc">~</span>strata,</span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>hh_weight,</span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="at">nest    =</span> <span class="cn">TRUE</span>,         <span class="co"># PSU IDs restart within each stratum</span></span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  <span class="at">data    =</span> df_hh</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span> psu,</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span> strata,</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span> hh_weight,</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="at">nest =</span> <span class="cn">TRUE</span>,         <span class="co"># PSU IDs restart within each stratum</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  <span class="at">data =</span> df_hh</span>
 <span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>)</span>
 <span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a></span>
 <span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>mpi_from_design <span class="ot">&lt;-</span> <span class="fu">compute_mpi</span>(</span>
@@ -612,7 +613,7 @@ correlated with poverty status), the differences can be substantial.</p>
 <code>compute_mpi()</code>:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>mpi_result <span class="ot">&lt;-</span> <span class="fu">compute_mpi</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  df_hh,</span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">mpi_specs    =</span> mpi_specs,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">mpi_specs =</span> mpi_specs,</span>
 <span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">deprivations =</span> deprivation_profile,  <span class="co"># pre-assembled list from define_deprivation()</span></span>
 <span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="at">weight =</span> <span class="st">&quot;hh_weight&quot;</span>,</span>
 <span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="at">strata =</span> <span class="st">&quot;strata&quot;</span>,</span>

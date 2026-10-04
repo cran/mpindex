@@ -52,20 +52,20 @@ specs_file <- system.file(
 
 specs <- define_mpi_specs(specs_file, uid = "uuid")
 
-df_household |>
-  define_deprivation(
-    indicator  = drinking_water,
-    cutoff     = drinking_water == 2,
-    mpi_specs  = specs
-  )
+define_deprivation(
+  df_household,
+  indicator = drinking_water,
+  cutoff = drinking_water == 2,
+  mpi_specs = specs
+)
 
-df_household_roster |>
-  define_deprivation(
-    indicator   = school_attendance,
-    cutoff      = attending_school == 2,
-    mpi_specs   = specs,
-    collapse_fn = max
-  )
+define_deprivation(
+  df_household_roster,
+  indicator = school_attendance,
+  cutoff = attending_school == 2,
+  mpi_specs = specs,
+  collapse_fn = max
+)
 
 }
 \seealso{

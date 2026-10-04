@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
 
 ## ----eval = FALSE-------------------------------------------------------------
 # # install.packages("devtools")
-# devtools::install_github("yng-me/mpindex")
+# pak::pak("yng-me/mpindex")
 
 ## ----setup--------------------------------------------------------------------
 library(mpindex)
@@ -143,22 +143,42 @@ mpi_result$index$k_33 |>
 # mpi_result$contribution$k_33
 
 ## ----echo = FALSE-------------------------------------------------------------
-gtx <- function(.gt, .decimals = 1, .offset = 0) {
-  d01_cp <- 2:3  + .offset
-  d02_cp <- 4:5  + .offset
-  d03_cp <- 6:11 + .offset
-  .gt |>
-    gt::tab_spanner(label = "Health",           columns = d01_cp) |>
-    gt::tab_spanner(label = "Education",        columns = d02_cp) |>
+gtx <- function(.data, title, decimals = 1, offset = 0) {
+  
+  d01_cp <- 2:3  + offset
+  d02_cp <- 4:5  + offset
+  d03_cp <- 6:11 + offset
+  
+  for(i in names(.data)) {
+    label_i <- attr(.data[[i]], "label")
+    
+    if(!is.null(label_i)) {
+      
+      if(grepl("__", label_i)) {
+        
+        attr(.data[[i]], "label") <- stringr::str_split_i(label_i, "__", i = 2)
+      } else {
+        
+        attr(.data[[i]], "label") <- label_i
+        
+      }
+      
+    }
+    
+  }
+  
+  .data |>
+    gt::gt() |>
+    gt::tab_header(title = title) |>
+    gt::tab_spanner(label = "Health", columns = d01_cp) |>
+    gt::tab_spanner(label = "Education", columns = d02_cp) |>
     gt::tab_spanner(label = "Living Standards", columns = d03_cp) |>
-    gt::fmt_number(columns = c(d01_cp, d02_cp, d03_cp), decimals = .decimals) |>
+    gt::fmt_number(columns = c(d01_cp, d02_cp, d03_cp), decimals = decimals) |>
     gt::tab_options(table.font.size = 12)
 }
 
-mpi_result$contribution$k_33 |>
-  gt::gt() |>
-  gt::tab_header(title = "Contribution to MPI by Indicator — 33% Poverty Cutoff") |>
-  gtx()
+mpi_result$contribution$k_33 |> 
+  gtx(title = "Contribution to MPI by Indicator — 33% Poverty Cutoff", decimals = 2) 
 
 ## ----eval = FALSE-------------------------------------------------------------
 # mpi_result$headcount_ratio$uncensored   # deprivation rate — all households
@@ -167,16 +187,12 @@ mpi_result$contribution$k_33 |>
 ## ----echo = FALSE-------------------------------------------------------------
 mpi_result$headcount_ratio$uncensored |>
   dplyr::ungroup() |>
-  gt::gt() |>
-  gt::tab_header(title = "Uncensored Headcount Ratio (all households)") |>
-  gtx(.decimals = 3)
+  gtx(title = "Uncensored Headcount Ratio (all households)", decimals = 3)
 
 ## ----echo = FALSE-------------------------------------------------------------
 mpi_result$headcount_ratio$k_33 |>
   dplyr::ungroup() |>
-  gt::gt() |>
-  gt::tab_header(title = "Censored Headcount Ratio (poor households only, k = 33%)") |>
-  gtx(.decimals = 3)
+  gtx(title = "Censored Headcount Ratio (poor households only, k = 33%)", decimals = 3)
 
 ## ----echo=FALSE---------------------------------------------------------------
 mpi_result <- compute_mpi(
@@ -235,11 +251,9 @@ mpi_result <- compute_mpi(
 ## ----echo = FALSE-------------------------------------------------------------
 mpi_result$deprivation_matrix$uncensored |>
   dplyr::ungroup() |>
-  head() |>
-  gt::gt() |>
-  gt::tab_header(title = "Deprivation Matrix — first 6 households (uncensored)") |>
-  gtx(.decimals = 0, .offset = 1) |>
-  gt::fmt_number(columns = 3, decimals = 3)
+  head(10) |>
+  gtx(title = "Deprivation Matrix — first 10 households (uncensored)", decimals = 0, offset = 1) |>
+  gt::fmt_number(columns = 2, decimals = 2)
 
 ## ----eval = FALSE-------------------------------------------------------------
 # mpi_result$deprivation_matrix$k_33 |> head()
@@ -247,11 +261,9 @@ mpi_result$deprivation_matrix$uncensored |>
 ## ----echo = FALSE-------------------------------------------------------------
 mpi_result$deprivation_matrix$k_33 |>
   dplyr::ungroup() |>
-  head() |>
-  gt::gt() |>
-  gt::tab_header(title = "Deprivation Matrix — first 6 households (k = 33% cutoff)") |>
-  gtx(.decimals = 0, .offset = 1) |>
-  gt::fmt_number(columns = 3, decimals = 3)
+  head(10) |>
+  gtx(title = "Deprivation Matrix — first 10 households (k = 33% cutoff)", decimals = 0, offset = 1) |>
+  gt::fmt_number(columns = 2, decimals = 2)
 
 ## ----eval = FALSE-------------------------------------------------------------
 # save_mpi(mpi_result, mpi_specs = mpi_specs, filename = "MPI Results")

@@ -2,7 +2,7 @@ Package: mpindex
 Type: Package
 Title: Multidimensional Poverty Index (MPI) via the Alkire-Foster
         Method
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(
     person(
       "Bhas", 
@@ -26,9 +26,9 @@ Description: Estimate Multidimensional Poverty Index (MPI) measures from househo
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: dplyr, stringr, jsonlite, tibble, openxlsx, tsg, rlang,
-        lifecycle
-Suggests: tidyr, survey, testthat (>= 3.0.0), knitr, rmarkdown, gt
+Imports: dplyr, jsonlite, tibble, openxlsx, tsg, rlang, lifecycle
+Suggests: tidyr, stringr, survey, testthat (>= 3.0.0), knitr,
+        rmarkdown, gt
 Config/testthat/edition: 3
 RoxygenNote: 7.3.3
 BugReports: https://github.com/yng-me/mpindex/issues
@@ -37,6 +37,6 @@ URL: https://github.com/yng-me/mpindex,
 VignetteBuilder: knitr
 Depends: R (>= 4.1.0)
 NeedsCompilation: no
-Packaged: 2026-06-14 22:49:20 UTC; bhasabdulsamad
+Packaged: 2026-10-04 16:21:32 UTC; bhasabdulsamad
 Repository: CRAN
-Date/Publication: 2026-06-15 07:50:15 UTC
+Date/Publication: 2026-10-04 16:50:02 UTC

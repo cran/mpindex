@@ -12,7 +12,7 @@
 
 
 
-<title>Migrating to mpindex 0.3.0</title>
+<title>Migrating to mpindex 0.3.x</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -337,12 +337,12 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Migrating to mpindex 0.3.0</h1>
+<h1 class="title toc-ignore">Migrating to mpindex 0.3.x</h1>
 
 
 
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(mpindex)</span></code></pre></div>
-<p>Version 0.3.0 contains several breaking changes that require updates
+<p>Version 0.3.* contains several breaking changes that require updates
 to existing code. This vignette walks through each one with before/after
 examples so you can migrate quickly.</p>
 <hr />
@@ -356,7 +356,7 @@ stays because it is a special pronoun in the tidyverse and collides with
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Old (0.2.x) — now errors</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">define_mpi_specs</span>(</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="st">&quot;path/to/specs.csv&quot;</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">.uid            =</span> <span class="st">&quot;uuid&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">.uid =</span> <span class="st">&quot;uuid&quot;</span>,</span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">.poverty_cutoff =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span></span>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>)</span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; Error in `define_mpi_specs()`:</span></span>
@@ -372,7 +372,7 @@ the right column in your scripts:</p>
 <thead>
 <tr class="header">
 <th>Old (0.2.x)</th>
-<th>New (0.3.0)</th>
+<th>New (0.3.*)</th>
 <th>Function(s)</th>
 </tr>
 </thead>
@@ -513,30 +513,30 @@ the right column in your scripts:</p>
 <p><strong>Before:</strong></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>specs <span class="ot">&lt;-</span> <span class="fu">define_mpi_specs</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="st">&quot;specs.csv&quot;</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">.uid            =</span> <span class="st">&quot;uuid&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">.uid =</span> <span class="st">&quot;uuid&quot;</span>,</span>
 <span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">.poverty_cutoffs =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>),</span>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">.unit_of_analysis =</span> <span class="st">&quot;household&quot;</span></span>
 <span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span>
 <span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
 <span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">compute_mpi</span>(</span>
 <span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  df_household,</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="at">.mpi_specs   =</span> specs,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="at">.mpi_specs =</span> specs,</span>
 <span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">.deprivations =</span> deps,</span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="at">.by           =</span> region</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="at">.by =</span> region</span>
 <span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>After:</strong></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>specs <span class="ot">&lt;-</span> <span class="fu">define_mpi_specs</span>(</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="st">&quot;specs.csv&quot;</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">uid             =</span> <span class="st">&quot;uuid&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">uid =</span> <span class="st">&quot;uuid&quot;</span>,</span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">poverty_cutoffs =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>, <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>),</span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">unit_of_analysis =</span> <span class="st">&quot;household&quot;</span></span>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>)</span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a></span>
 <span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">compute_mpi</span>(</span>
 <span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  df_household,</span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="at">mpi_specs    =</span> specs,</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="at">mpi_specs =</span> specs,</span>
 <span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  <span class="at">deprivations =</span> deps,</span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  <span class="at">by           =</span> region</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  <span class="at">by =</span> region</span>
 <span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>)</span></code></pre></div>
 <hr />
 </div>
@@ -558,7 +558,7 @@ time:</strong></p>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>dm <span class="ot">&lt;-</span> <span class="fu">define_deprivation</span>(</span>
 <span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  df, drinking_water,</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">cutoff    =</span> drinking_water <span class="sc">==</span> <span class="dv">2</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">cutoff =</span> drinking_water <span class="sc">==</span> <span class="dv">2</span>,</span>
 <span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="at">mpi_specs =</span> specs                           <span class="co"># … then pass it</span></span>
 <span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>)</span></code></pre></div>
 <p>Omitting <code>mpi_specs</code> now raises an error that tells you
@@ -616,11 +616,11 @@ accepts either inline <code>deprived()</code> cutoffs or pre-built
 <code>define_deprivation()</code> data frames.</p>
 <p><strong>Before:</strong></p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>dm1 <span class="ot">&lt;-</span> <span class="fu">define_deprivation</span>(df, drinking_water, <span class="at">.cutoff =</span> drinking_water <span class="sc">==</span> <span class="dv">2</span>, ...)</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>dm2 <span class="ot">&lt;-</span> <span class="fu">define_deprivation</span>(df, electricity,    <span class="at">.cutoff =</span> electricity <span class="sc">==</span> <span class="dv">2</span>,    ...)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>dm2 <span class="ot">&lt;-</span> <span class="fu">define_deprivation</span>(df, electricity, <span class="at">.cutoff =</span> electricity <span class="sc">==</span> <span class="dv">2</span>, ...)</span>
 <span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a></span>
 <span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">compute_mpi</span>(</span>
 <span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  df,</span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">.mpi_specs          =</span> specs,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">.mpi_specs =</span> specs,</span>
 <span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="at">.deprivation_profile =</span> <span class="fu">list</span>(<span class="at">drinking_water =</span> dm1, <span class="at">electricity =</span> dm2)</span>
 <span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>After — inline <code>deprived()</code> cutoffs
@@ -629,26 +629,24 @@ accepts either inline <code>deprived()</code> cutoffs or pre-built
 <span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">compute_mpi</span>(</span>
 <span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  df_household,</span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="at">mpi_specs    =</span> specs,</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="at">mpi_specs =</span> specs,</span>
 <span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="at">deprivations =</span> <span class="fu">list</span>(</span>
 <span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>    <span class="at">drinking_water =</span> <span class="fu">deprived</span>(drinking_water <span class="sc">==</span> <span class="dv">2</span>),</span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>    <span class="at">electricity    =</span> <span class="fu">deprived</span>(electricity <span class="sc">==</span> <span class="dv">2</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>    <span class="at">electricity =</span> <span class="fu">deprived</span>(electricity <span class="sc">==</span> <span class="dv">2</span>)</span>
 <span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>  )</span>
 <span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>After — pre-built profile (useful when you need to inspect
 intermediates):</strong></p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>specs <span class="ot">&lt;-</span> <span class="fu">global_mpi_specs</span>()</span>
 <span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>dm1 <span class="ot">&lt;-</span> <span class="fu">define_deprivation</span>(df_household, drinking_water,</span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>                           <span class="at">cutoff =</span> drinking_water <span class="sc">==</span> <span class="dv">2</span>, <span class="at">mpi_specs =</span> specs)</span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>dm2 <span class="ot">&lt;-</span> <span class="fu">define_deprivation</span>(df_household, electricity,</span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>                           <span class="at">cutoff =</span> electricity <span class="sc">==</span> <span class="dv">2</span>,    <span class="at">mpi_specs =</span> specs)</span>
-<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">compute_mpi</span>(</span>
-<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>  df_household,</span>
-<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>  <span class="at">mpi_specs    =</span> specs,</span>
-<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>  <span class="at">deprivations =</span> <span class="fu">list</span>(<span class="at">drinking_water =</span> dm1, <span class="at">electricity =</span> dm2)</span>
-<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>dm1 <span class="ot">&lt;-</span> <span class="fu">define_deprivation</span>(df_household, drinking_water, <span class="at">cutoff =</span> drinking_water <span class="sc">==</span> <span class="dv">2</span>, <span class="at">mpi_specs =</span> specs)</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>dm2 <span class="ot">&lt;-</span> <span class="fu">define_deprivation</span>(df_household, electricity, <span class="at">cutoff =</span> electricity <span class="sc">==</span> <span class="dv">2</span>,    <span class="at">mpi_specs =</span> specs)</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">compute_mpi</span>(</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>  df_household,</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>  <span class="at">mpi_specs =</span> specs,</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>  <span class="at">deprivations =</span> <span class="fu">list</span>(<span class="at">drinking_water =</span> dm1, <span class="at">electricity =</span> dm2)</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>)</span></code></pre></div>
 <hr />
 </div>
 <div id="collapse-replaced-by-collapse_fn" class="section level2">
@@ -744,9 +742,7 @@ error:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">define_mpi_specs</span>(</span>
 <span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;global-mpi-specs.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mpindex&quot;</span>),</span>
 <span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>  <span class="at">aggregation =</span> <span class="st">&quot;region&quot;</span></span>
-<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>)</span>
-<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
-<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="co">#&gt; ! The `aggregation` argument has been removed from `define_mpi_specs()`. Pass grouping columns via `by` in `compute_mpi()` instead.</span></span></code></pre></div>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>Before:</strong></p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>specs <span class="ot">&lt;-</span> <span class="fu">define_mpi_specs</span>(<span class="st">&quot;specs.csv&quot;</span>, <span class="at">uid =</span> <span class="st">&quot;uuid&quot;</span>, <span class="at">aggregation =</span> <span class="st">&quot;region&quot;</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">compute_mpi</span>(df, <span class="at">mpi_specs =</span> specs, <span class="at">deprivations =</span> ...)</span>
@@ -754,14 +750,6 @@ error:</p>
 <p><strong>After:</strong></p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>specs  <span class="ot">&lt;-</span> <span class="fu">define_mpi_specs</span>(<span class="st">&quot;specs.csv&quot;</span>, <span class="at">uid =</span> <span class="st">&quot;uuid&quot;</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">compute_mpi</span>(df, <span class="at">mpi_specs =</span> specs, <span class="at">deprivations =</span> ..., <span class="at">by =</span> region)</span></code></pre></div>
-<hr />
-</div>
-<div id="minimum-r-version-bumped-to-4.1.0" class="section level2">
-<h2>9. Minimum R version bumped to 4.1.0</h2>
-<p><code>mpindex</code> 0.3.0 requires R ≥ 4.1.0 (released May 2021).
-The native pipe <code>|&gt;</code> and <code>\(x)</code> lambda syntax
-are used throughout the package internals. Update R if you are on an
-older version.</p>
 <hr />
 </div>
 <div id="quick-migration-checklist" class="section level2">
